@@ -1,10 +1,10 @@
-# Developer Assessment
+# ClearPoint Frontend Developer Assessment Angular
 
 This repository contains code used in the interview process for developers joining the Front-end Practice at ClearPoint.
 
 There are two parts to this solution and depending on the type of role you are applying for you will be asked to contribute to one or both areas.
 The application is a simple to-do list that allows a user to create items in a list and mark them as complete.
-It is a React-based front end application that uses a NodeJS API at the backend to facilitate using and persisting items in this to-do list.
+It is an Angular-based front end application that uses a NodeJS API at the backend to facilitate using and persisting items in this to-do list.
 <br/><br/>
 
 For this exercise you are asked to complete the requirements to enhance the UI functionality in the **Frontend** folder.
