@@ -17,9 +17,8 @@ const TodoItem = ({ item, onItemCompleted }) => {
       setMarkAsCompletedError(`Failed to mark item as completed: ${error.message}`)
 
       // show the error message for 3 seconds, than hide it and let user to try again
-      setTimeout(() => {
-        setMarkAsCompletedError(null)
-      }, 3000)
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+      setMarkAsCompletedError(null)
     }
   }
 

@@ -28,9 +28,7 @@ const initRender = () => {
   return {
     onItemCompleted,
     markAsCompletedButton,
-    getByTestId,
     queryByTestId,
-    getByText,
     queryByText,
   }
 }
@@ -48,7 +46,15 @@ test('try to mark item as completed without network', async () => {
     expect(queryByText('Failed to mark item as completed: Network Error')).toBeInTheDocument()
   })
   expect(onItemCompleted).toBeCalledTimes(0)
-})
+
+  // Error message should disappear after 3 seconds
+  await waitFor(
+    () => {
+      expect(queryByText('Failed to mark item as completed: Network Error')).not.toBeInTheDocument()
+    },
+    { timeout: 3000 }
+  )
+}, 4000)
 
 test('mark an item as completed', async () => {
   const { onItemCompleted, markAsCompletedButton, queryByTestId } = initRender()
