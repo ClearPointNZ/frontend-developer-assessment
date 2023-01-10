@@ -5,8 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
-    "test": "jest -i --colors --detectOpenHandles --silent sinon sinon-mongoose ./src/**/*.spec.ts",
-    "test:integration": "jest --config ./src/tests/integration/jest.json "
+    "test:unit": "jest -i --colors --detectOpenHandles --silent",
+    "test:integration": "jest --config ./src/tests/integration/jest.json ",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "keywords": [],
   "author": "",

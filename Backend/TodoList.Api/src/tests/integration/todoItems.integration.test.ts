@@ -35,4 +35,62 @@ describe('TodoItems routes', () => {
       .expect(httpStatus.OK);
     expect(response.body).toHaveLength(1);
   });
+
+  test('should return 404 if todoItem does not exist', async () => {
+    await request(app)
+      .put('/api/todoItems/ffffffffffffffffffffffff')
+      .send({
+        description: 'test2',
+        isCompleted: false,
+      })
+      .expect(httpStatus.NOT_FOUND);
+  });
+
+  test('should return 404 if provided id is not an objectId', async () => {
+    await request(app)
+      .put('/api/todoItems/some-non-existing-id')
+      .send({
+        description: 'test2',
+        isCompleted: false,
+      })
+      .expect(httpStatus.NOT_FOUND);
+  });
+
+  test('should be able to update a todoItem', async () => {
+    const response = await request(app)
+      .get('/api/todoItems')
+      .expect(httpStatus.OK);
+    expect(response.body).toHaveLength(1);
+    const id = response.body[0].id;
+
+    await request(app)
+      .put(`/api/todoItems/${id}`)
+      .send({
+        description: 'test2',
+        isCompleted: false,
+      })
+      .expect(httpStatus.OK);
+
+    const updatedResponse = await request(app)
+      .get('/api/todoItems')
+      .expect(httpStatus.OK);
+    expect(updatedResponse.body[0].description).toEqual('test2');
+  });
+
+  test('should be able to delete a todoItem', async () => {
+    const response = await request(app)
+      .get('/api/todoItems')
+      .expect(httpStatus.OK);
+    expect(response.body).toHaveLength(1);
+    const id = response.body[0].id;
+
+    await request(app)
+      .delete(`/api/todoItems/${id}`)
+      .expect(httpStatus.NO_CONTENT);
+
+    const updatedResponse = await request(app)
+      .get('/api/todoItems')
+      .expect(httpStatus.OK);
+    expect(updatedResponse.body).toHaveLength(0);
+  });
 });

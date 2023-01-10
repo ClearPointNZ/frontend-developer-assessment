@@ -1,1 +1,1 @@
-export * from "./todoItems";
+export * from '../modules/todo/todo.router';

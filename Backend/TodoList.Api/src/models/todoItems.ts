@@ -10,7 +10,7 @@ export interface BaseTodoItem {
 }
 
 export const TodoItemSchema = new Schema<BaseTodoItem>({
-  description: { type: String, required: true, index: true },
+  description: { type: String, required: true, index: true, unique: true },
   isCompleted: { type: Boolean, required: true, default: false },
 });
 
