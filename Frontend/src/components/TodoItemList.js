@@ -1,27 +1,62 @@
-import { Button, Table } from 'react-bootstrap'
-import { markAsCompleted } from '../api/todo.api'
+import React, { useState, useEffect, useCallback } from 'react'
+import { fetchTodoItems } from '../api/todo.api'
+import { Button, Table, Spinner } from 'react-bootstrap'
+import TodoItem from './TodoItem'
 
-const TodoItemList = ({ items, loadingError, onItemCompleted, onRefresh }) => {
-  const handleMarkAsComplete = async (item) => {
+const TodoItemList = ({ needsFresh, onRefreshSucceeded }) => {
+  const [items, setItems] = useState([])
+  const [loadingError, setLoadingError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const fetchItems = useCallback(async () => {
     try {
-      await markAsCompleted(item.id)
-      onItemCompleted(item.id)
+      setLoadingError(null)
+      setIsLoading(true)
+      const newItems = await fetchTodoItems()
+      setIsLoading(false)
+      setItems(newItems)
     } catch (error) {
-      console.error(error)
+      setIsLoading(false)
+      setLoadingError(`Failed to load todo items: ${error.message}`)
     }
+  }, [setItems])
+
+  useEffect(() => {
+    if (needsFresh) {
+      fetchItems().then(() => {
+        if (onRefreshSucceeded) {
+          onRefreshSucceeded()
+        }
+      })
+    }
+  }, [onRefreshSucceeded, needsFresh, fetchItems])
+
+  const onItemCompleted = (itemId) => {
+    const updatedItems = items.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, isCompleted: true }
+      }
+      return item
+    })
+    setItems(updatedItems)
   }
 
   return (
     <>
       <h1>
         Showing {items.length} Item(s){' '}
-        <Button data-testid="refresh-btn" variant="primary" className="pull-right" onClick={onRefresh}>
+        <Button data-testid="refresh-btn" variant="primary" className="pull-right" onClick={fetchItems}>
           Refresh
         </Button>
       </h1>
 
+      {isLoading && (
+        <Spinner data-testid="loading-spinner" animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      )}
       {loadingError && <p className="text-danger">{loadingError}</p>}
-      {!loadingError && (
+      {!loadingError && !isLoading && (
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -32,23 +67,7 @@ const TodoItemList = ({ items, loadingError, onItemCompleted, onRefresh }) => {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.description}</td>
-                <td>
-                  {item.isCompleted && <span className="badge bg-success">Completed</span>}
-                  {!item.isCompleted && (
-                    <Button
-                      data-testid={`mark-as-completed-${item.id}`}
-                      variant="warning"
-                      size="sm"
-                      onClick={() => handleMarkAsComplete(item)}
-                    >
-                      Mark as completed
-                    </Button>
-                  )}
-                </td>
-              </tr>
+              <TodoItem key={item.id} item={item} onItemCompleted={onItemCompleted} />
             ))}
           </tbody>
         </Table>

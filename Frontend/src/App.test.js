@@ -86,6 +86,14 @@ test('add a new todo item', async () => {
     data: { id: 2, description: 'Buy Milk', isCompleted: false },
   })
 
+  axios.get.mockClear()
+  axios.get.mockResolvedValueOnce({
+    data: [
+      { id: itemId, description: 'Buy Food', isCompleted: false },
+      { id: 2, description: 'Buy Milk', isCompleted: false },
+    ],
+  })
+
   const descriptionInput = screen.getByTestId('description')
   const addItemButton = screen.getByTestId('add-item-btn')
 
@@ -97,4 +105,6 @@ test('add a new todo item', async () => {
   await waitFor(() => {
     expect(screen.getByText('Buy Milk')).toBeInTheDocument()
   })
+
+  expect(axios.get).toHaveBeenCalledTimes(1)
 })

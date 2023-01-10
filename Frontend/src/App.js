@@ -1,42 +1,15 @@
 import './App.css'
 import { Container, Row, Col } from 'react-bootstrap'
-import React, { useCallback, useEffect, useState } from 'react'
-import { fetchTodoItems } from './api/todo.api'
+import React, { useState } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import TodoItemList from './components/TodoItemList'
 import AddTodoItem from './components/AddTodoItem'
 
 const App = () => {
-  const [items, setItems] = useState([])
-  const [loadingError, setLoadingError] = useState(null)
-
-  const fetchItems = useCallback(async () => {
-    try {
-      const items = await fetchTodoItems()
-      setItems(items)
-    } catch (error) {
-      console.error(error)
-      setLoadingError(`Failed to load todo items: ${error.message}`)
-    }
-  }, [setItems])
-
-  useEffect(() => {
-    fetchItems()
-  }, [fetchItems])
-
-  const handleItemCompleted = (itemId) => {
-    const updatedItems = items.map((item) => {
-      if (item.id === itemId) {
-        return { ...item, isCompleted: true }
-      }
-      return item
-    })
-    setItems(updatedItems)
-  }
-
+  const [needsFresh, setNeedsFresh] = useState(true)
   const handleItemAdded = (item) => {
-    setItems([...items, item])
+    setNeedsFresh(true)
   }
 
   return (
@@ -51,12 +24,7 @@ const App = () => {
         <br />
         <Row>
           <Col>
-            <TodoItemList
-              loadingError={loadingError}
-              items={items}
-              onRefresh={fetchItems}
-              onItemCompleted={handleItemCompleted}
-            />
+            <TodoItemList needsFresh={needsFresh} onRefreshSucceeded={() => setNeedsFresh(false)} />
           </Col>
         </Row>
       </Container>
