@@ -83,10 +83,13 @@ todoItemRouter.put('/:id', async (req: Request, res: Response) => {
 todoItemRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    const existingTodoItem: TodoItem = await find(id);
+    if (existingTodoItem) {
+      await remove(id);
+      return res.sendStatus(204);
+    }
 
-    await remove(id);
-
-    return res.sendStatus(204);
+    return res.status(404).send('TodoItem not found');
   } catch (e) {
     return res.status(500).send(e.message);
   }

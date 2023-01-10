@@ -62,6 +62,7 @@ describe('TodoItems routes', () => {
       .expect(httpStatus.OK);
     expect(response.body).toHaveLength(1);
     const id = response.body[0].id;
+    expect(response.body[0].description).toEqual('test');
 
     await request(app)
       .put(`/api/todoItems/${id}`)
@@ -72,9 +73,9 @@ describe('TodoItems routes', () => {
       .expect(httpStatus.OK);
 
     const updatedResponse = await request(app)
-      .get('/api/todoItems')
+      .get(`/api/todoItems/${id}`)
       .expect(httpStatus.OK);
-    expect(updatedResponse.body[0].description).toEqual('test2');
+    expect(updatedResponse.body.description).toEqual('test2');
   });
 
   test('should be able to delete a todoItem', async () => {
@@ -92,5 +93,11 @@ describe('TodoItems routes', () => {
       .get('/api/todoItems')
       .expect(httpStatus.OK);
     expect(updatedResponse.body).toHaveLength(0);
+  });
+
+  test('should return 404 when tried to delete a non-existing todoItem', async () => {
+    await request(app)
+      .delete('/api/todoItems/some-non-existing-bad-id')
+      .expect(httpStatus.NOT_FOUND);
   });
 });

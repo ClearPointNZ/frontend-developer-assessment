@@ -75,7 +75,7 @@ describe('todo.service', () => {
       sinon.stub(TodoItemModel, 'findByIdAndUpdate').resolves({
         _id: id,
         description: 'test2',
-        isComplete: false,
+        isCompleted: false,
       });
       const item = await update(id, {
         description: 'test2',
@@ -83,9 +83,9 @@ describe('todo.service', () => {
       });
 
       expect(item).toEqual({
-        _id: id,
+        id,
         description: 'test2',
-        isComplete: false,
+        isCompleted: false,
       });
     });
 

@@ -36,20 +36,34 @@ export const todoItemDescriptionExists = async (
 export const create = async (newTodoItem: BaseTodoItem): Promise<TodoItem> => {
   const todoItem = await TodoItemModel.create(newTodoItem);
 
-  return todoItem;
+  return {
+    id: todoItem?._id.toString(),
+    description: todoItem?.description,
+    isCompleted: todoItem?.isCompleted,
+  };
 };
 
 export const update = async (
   id: string,
   todoItemUpdate: BaseTodoItem
-): Promise<TodoItem | null> =>
-  TodoItemModel.findByIdAndUpdate(
+): Promise<TodoItem | null> => {
+  const updated = await TodoItemModel.findByIdAndUpdate(
     {
       _id: id,
     },
     { ...todoItemUpdate },
     { new: true }
   );
+  if (!updated) {
+    return null;
+  }
+
+  return {
+    id: updated?._id.toString(),
+    description: updated?.description,
+    isCompleted: updated?.isCompleted,
+  };
+};
 
 export const remove = async (id: string): Promise<void> =>
   TodoItemModel.findByIdAndRemove({ _id: id });
