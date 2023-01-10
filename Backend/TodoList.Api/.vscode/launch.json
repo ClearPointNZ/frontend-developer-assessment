@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceFolder}/node_modules/.bin/jest",
+        "--config",
+        "./src/tests/integration/jest.json",
+        "${file}"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "name": "Jest e2e Tests",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceRoot}",
+      "type": "node"
+    }
+  ]
+}

@@ -1,58 +1,18 @@
-import express, { Request, Response } from "express";
-import ShortUniqueId from "short-unique-id";
-import { BaseTodoItem, TodoItem, TodoItems } from "../models/todoItems";
+import express, { Request, Response } from 'express';
+import { BaseTodoItem, TodoItem } from '../models/todoItems';
+import {
+  create,
+  find,
+  findAll,
+  remove,
+  todoItemDescriptionExists,
+  update,
+} from '../services/todo.service';
 
 export const todoItemRouter = express.Router();
 
-let todoItems: TodoItems = {};
-
-const findAll = async (): Promise<TodoItem[]> => Object.values(todoItems);
-const find = async (id: string): Promise<TodoItem> => todoItems[id];
-
-const todoItemDescriptionExists = async (
-  description: string
-): Promise<boolean> => {
-  return Object.values(todoItems).some(
-    (todoItem) => todoItem.description === description
-  );
-};
-
-const create = async (newTodoItem: BaseTodoItem): Promise<TodoItem> => {
-  const uid = new ShortUniqueId({ length: 10 });
-  const id: string = uid();
-  todoItems[id] = {
-    id,
-    ...newTodoItem,
-  };
-
-  return todoItems[id];
-};
-const update = async (
-  id: string,
-  todoItemUpdate: BaseTodoItem
-): Promise<TodoItem | null> => {
-  const existingtodoItem = await find(id);
-
-  if (!existingtodoItem) {
-    return null;
-  }
-
-  todoItems[id] = { id, ...todoItemUpdate };
-
-  return todoItems[id];
-};
-const remove = async (id: string): Promise<null | void> => {
-  const existingtodoItem = await find(id);
-
-  if (!existingtodoItem) {
-    return null;
-  }
-
-  delete todoItems[id];
-};
-
 // GET todoItems
-todoItemRouter.get("/", async (req: Request, res: Response) => {
+todoItemRouter.get('/', async (req: Request, res: Response) => {
   try {
     const items: TodoItem[] = await findAll();
 
@@ -63,7 +23,7 @@ todoItemRouter.get("/", async (req: Request, res: Response) => {
 });
 
 // GET todoItem/:id
-todoItemRouter.get("/:id", async (req: Request, res: Response) => {
+todoItemRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const item: TodoItem = await find(req.params.id);
 
@@ -71,21 +31,21 @@ todoItemRouter.get("/:id", async (req: Request, res: Response) => {
       return res.status(200).send(item);
     }
 
-    return res.status(404).send("TodoItem not found");
+    return res.status(404).send('TodoItem not found');
   } catch (e) {
     return res.status(500).send(e.message);
   }
 });
 
 // POST todoItem
-todoItemRouter.post("/", async (req: Request, res: Response) => {
+todoItemRouter.post('/', async (req: Request, res: Response) => {
   try {
     const todoItem: BaseTodoItem = req.body;
     console.log({ todoItem, req, body: req.body });
 
     const description = todoItem?.description;
     if (!description) {
-      return res.status(400).send("Description is required");
+      return res.status(400).send('Description is required');
     }
 
     const hasDuplicateDescription = await todoItemDescriptionExists(
@@ -93,7 +53,7 @@ todoItemRouter.post("/", async (req: Request, res: Response) => {
     );
 
     if (hasDuplicateDescription) {
-      return res.status(400).send("Description already exists");
+      return res.status(400).send('Description already exists');
     }
     const newtodoItem = await create(todoItem);
     return res.status(201).json(newtodoItem);
@@ -103,7 +63,7 @@ todoItemRouter.post("/", async (req: Request, res: Response) => {
 });
 
 // PUT todoItems/:id
-todoItemRouter.put("/:id", async (req: Request, res: Response) => {
+todoItemRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const todoItem: BaseTodoItem = req.body;
@@ -114,14 +74,14 @@ todoItemRouter.put("/:id", async (req: Request, res: Response) => {
       return res.status(200).json(updatedItem);
     }
 
-    return res.status(404).send("TodoItem not found");
+    return res.status(404).send('TodoItem not found');
   } catch (e) {
     return res.status(500).send(e.message);
   }
 });
 
 // DELETE todoItems/:id
-todoItemRouter.delete("/:id", async (req: Request, res: Response) => {
+todoItemRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
 
