@@ -13,21 +13,6 @@ const setupDB = async () => {
   } catch (e) {
     console.log('Error deleting all FileRecords', e);
   }
-
-  // await TodoItemModel.insertMany([
-  //   {
-  //     description: 'Buy milk',
-  //     isCompleted: false,
-  //   },
-  //   {
-  //     description: 'Buy eggs',
-  //     isCompleted: false,
-  //   },
-  //   {
-  //     description: 'Complete the todo app',
-  //     isCompleted: false,
-  //   },
-  // ]);
 };
 export const teardownDb = async () => {
   await disconnect();
