@@ -22,11 +22,18 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
-      - run: yarn install
+      - name: Install dependencies for backend
+        working-directory: ./Backend/TodoList.Api
+        run: yarn install
 
-      - run: yarn test
-        env:
-          CI: true
+      - name: Run backend unit tests
+        working-directory: ./Backend/TodoList.Api
+        run: yarn run test:unit
 
-      - run: echo "MONGO_URI=mongodb://localhost:27017/gsu" > .env
-      - run: yarn test:e2e
+      - name: Run backend integration tests
+        working-directory: ./Backend/TodoList.Api
+        run: yarn run test:integration
+
+      - name: Run frontend unit tests
+        working-directory: ./Frontend
+        run: yarn install && yarn run test
