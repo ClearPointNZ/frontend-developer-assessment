@@ -1,4 +1,4 @@
-import { Image, Alert, Container, Row, Col } from 'react-bootstrap'
+import { Alert, Col, Container, Image, Row } from 'react-bootstrap'
 
 const Header = () => {
   return (

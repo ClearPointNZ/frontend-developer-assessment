@@ -1,6 +1,6 @@
-import { render, fireEvent, waitFor } from '@testing-library/react'
-import TodoItem from './TodoItem'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import axios from 'axios'
+import TodoItem from './TodoItem'
 
 afterEach(() => {
   jest.clearAllMocks()
@@ -39,7 +39,7 @@ test('renders the TodoItem', async () => {
 
 test('try to mark item as completed without network', async () => {
   const { onItemCompleted, markAsCompletedButton, queryByText } = initRender()
-  axios.put.mockRejectedValueOnce(new Error('Network Error'))
+  ;(axios.put as jest.Mock).mockRejectedValueOnce(new Error('Network Error'))
   fireEvent.click(markAsCompletedButton)
 
   await waitFor(() => {
@@ -59,7 +59,7 @@ test('try to mark item as completed without network', async () => {
 test('mark an item as completed', async () => {
   const { onItemCompleted, markAsCompletedButton, queryByTestId } = initRender()
 
-  axios.put.mockResolvedValueOnce({
+  ;(axios.put as jest.Mock).mockResolvedValueOnce({
     data: { ...item, isCompleted: true },
   })
 

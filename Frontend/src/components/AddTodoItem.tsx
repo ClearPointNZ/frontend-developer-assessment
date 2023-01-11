@@ -1,11 +1,16 @@
-import React, { useState } from 'react'
-import { Button, Container, Row, Col, Form, Stack } from 'react-bootstrap'
+import { useState } from 'react'
+import { Button, Col, Container, Form, Row, Stack } from 'react-bootstrap'
 import { addNewTodoItem } from '../api/todo.api'
+import { ITodoItem } from '../interfaces/TodoItem'
 
-const AddTodoItem = ({ onItemAdded }) => {
+interface AddTodoItemProps {
+  onItemAdded: (item: ITodoItem) => void
+}
+
+const AddTodoItem = ({ onItemAdded }: AddTodoItemProps) => {
   const [description, setDescription] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const handleDescriptionChange = (event) => {
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value)
   }
 
@@ -22,7 +27,7 @@ const AddTodoItem = ({ onItemAdded }) => {
     try {
       const newItem = await addNewTodoItem(description)
       onItemAdded(newItem)
-    } catch (error) {
+    } catch (error: any) {
       setErrorMessage(error.message)
     }
   }

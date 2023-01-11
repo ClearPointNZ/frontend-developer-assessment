@@ -1,6 +1,6 @@
-import { render, fireEvent, waitFor } from '@testing-library/react'
-import AddTodoItem from './AddTodoItem'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import axios from 'axios'
+import AddTodoItem from './AddTodoItem'
 
 afterEach(() => {
   jest.clearAllMocks()
@@ -18,8 +18,7 @@ test('renders the AddTodoItem', async () => {
   expect(addItemButton).toBeInTheDocument()
 
   const updatedItem = { id: '63bd040ac11625d13087f860', description: 'Buy Food', isCompleted: false }
-
-  axios.post.mockResolvedValueOnce({
+  ;(axios.post as jest.Mock).mockResolvedValueOnce({
     data: updatedItem,
   })
 
@@ -38,7 +37,7 @@ test('renders the AddTodoItem', async () => {
 test('clear description', async () => {
   const handleItemAdded = jest.fn()
   const { getByTestId } = render(<AddTodoItem onItemAdded={handleItemAdded} />)
-  const descriptionInput = getByTestId('description')
+  const descriptionInput = getByTestId('description') as HTMLInputElement
   const clearDescriptionButton = getByTestId('clear-btn')
 
   fireEvent.change(descriptionInput, { target: { value: 'Buy Food' } })
@@ -63,9 +62,9 @@ test('try to add a todo item with an error', async () => {
   const handleItemAdded = jest.fn()
   const { getByTestId, getByText, queryByText } = render(<AddTodoItem onItemAdded={handleItemAdded} />)
 
-  const descriptionInput = getByTestId('description')
+  const descriptionInput = getByTestId('description') as HTMLInputElement
   const addItemButton = getByTestId('add-item-btn')
-  axios.post.mockRejectedValueOnce({
+  ;(axios.post as jest.Mock).mockRejectedValueOnce({
     response: { data: 'Error' },
   })
 

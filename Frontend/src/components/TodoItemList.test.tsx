@@ -1,22 +1,21 @@
-import { render, fireEvent, waitFor } from '@testing-library/react'
-import TodoItemList from './TodoItemList'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import axios from 'axios'
+import { ITodoItem } from '../interfaces/TodoItem'
+import TodoItemList from './TodoItemList'
 
 afterEach(() => {
   jest.clearAllMocks()
 })
 
-let items = [
+let items: ITodoItem[] = [
   { id: '63bd040ac11625d13087f859', description: 'Buy Water', isCompleted: true },
   { id: '63bd040ac11625d13087f860', description: 'Buy Food', isCompleted: false },
   { id: '63bd040ac11625d13087f861', description: 'Buy Milk', isCompleted: false },
 ]
 
 test('renders with network error', async () => {
-  axios.get.mockRejectedValueOnce(new Error('Network Error'))
-  const { getByText, getByTestId } = render(
-    <TodoItemList items={items} needsFresh={true} onRefreshSucceeded={jest.fn()} />
-  )
+  ;(axios.get as jest.Mock).mockRejectedValueOnce(new Error('Network Error'))
+  const { getByText, getByTestId } = render(<TodoItemList needsFresh={true} onRefreshSucceeded={jest.fn()} />)
 
   // it should show the loading indicator
   expect(getByTestId('loading-spinner')).toBeInTheDocument()
@@ -29,11 +28,9 @@ test('renders with network error', async () => {
 test('renders the TodoItemList', async () => {
   const onRefreshSucceeded = jest.fn()
 
-  axios.get.mockResolvedValueOnce({ data: items })
+  ;(axios.get as jest.Mock).mockResolvedValueOnce({ data: items })
 
-  const { getByText, getByTestId } = render(
-    <TodoItemList items={items} needsFresh={true} onRefreshSucceeded={onRefreshSucceeded} />
-  )
+  const { getByText, getByTestId } = render(<TodoItemList needsFresh={true} onRefreshSucceeded={onRefreshSucceeded} />)
 
   expect(axios.get).toHaveBeenCalledTimes(1)
 
@@ -49,8 +46,8 @@ test('renders the TodoItemList', async () => {
   })
 
   // test refresh button
-  axios.get.mockClear()
-  axios.get.mockResolvedValueOnce({
+  ;(axios.get as jest.Mock).mockClear()
+  ;(axios.get as jest.Mock).mockResolvedValueOnce({
     data: [...items, { id: '63bd040ac11625d13087f862', description: 'Buy books', isCompleted: false }],
   })
   fireEvent.click(getByTestId('refresh-btn'))

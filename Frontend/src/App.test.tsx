@@ -1,7 +1,7 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react'
-import App from './App'
-import axios from 'axios'
 import '@testing-library/jest-dom/extend-expect'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import axios from 'axios'
+import App from './App'
 
 afterEach(() => {
   jest.clearAllMocks()
@@ -10,7 +10,7 @@ afterEach(() => {
 const itemId = '63bd040ac11625d13087f860'
 
 const renderWithMockedAxios = async () => {
-  axios.get.mockResolvedValueOnce({
+  ;(axios.get as jest.Mock).mockResolvedValueOnce({
     data: [{ id: itemId, description: 'Buy Food', isCompleted: false }],
   })
 
@@ -36,8 +36,7 @@ test('renders the App', async () => {
 
 test('mark an item as completed', async () => {
   await renderWithMockedAxios()
-
-  axios.put.mockResolvedValueOnce({
+  ;(axios.put as jest.Mock).mockResolvedValueOnce({
     data: { id: itemId, description: 'Buy Food', isCompleted: true },
   })
 
@@ -61,8 +60,7 @@ test('try to add a todo item with empty description', async () => {
 
 test('try to add a todo item with description that already exists', async () => {
   await renderWithMockedAxios()
-
-  axios.post.mockRejectedValueOnce({
+  ;(axios.post as jest.Mock).mockRejectedValueOnce({
     response: { data: 'Description already exists' },
   })
 
@@ -81,13 +79,11 @@ test('try to add a todo item with description that already exists', async () => 
 
 test('add a new todo item', async () => {
   await renderWithMockedAxios()
-
-  axios.post.mockResolvedValueOnce({
+  ;(axios.post as jest.Mock).mockResolvedValueOnce({
     data: { id: 2, description: 'Buy Milk', isCompleted: false },
   })
-
-  axios.get.mockClear()
-  axios.get.mockResolvedValueOnce({
+  ;(axios.get as jest.Mock).mockClear()
+  ;(axios.get as jest.Mock).mockResolvedValueOnce({
     data: [
       { id: itemId, description: 'Buy Food', isCompleted: false },
       { id: 2, description: 'Buy Milk', isCompleted: false },

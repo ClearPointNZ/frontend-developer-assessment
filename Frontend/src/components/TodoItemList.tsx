@@ -1,21 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { Button, Spinner, Table } from 'react-bootstrap'
 import { fetchTodoItems } from '../api/todo.api'
-import { Button, Table, Spinner } from 'react-bootstrap'
+import { ITodoItem } from '../interfaces/TodoItem'
 import TodoItem from './TodoItem'
 
-const TodoItemList = ({ needsFresh, onRefreshSucceeded }) => {
-  const [items, setItems] = useState([])
-  const [loadingError, setLoadingError] = useState(null)
+interface TodoItemListProps {
+  needsFresh: boolean
+  onRefreshSucceeded?: () => void
+}
+
+const TodoItemList = ({ needsFresh, onRefreshSucceeded }: TodoItemListProps) => {
+  const [items, setItems] = useState<ITodoItem[]>([])
+  const [loadingError, setLoadingError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const fetchItems = useCallback(async () => {
     try {
-      setLoadingError(null)
+      setLoadingError('')
       setIsLoading(true)
       const newItems = await fetchTodoItems()
       setIsLoading(false)
       setItems(newItems)
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false)
       setLoadingError(`Failed to load todo items: ${error.message}`)
     }
@@ -31,7 +37,7 @@ const TodoItemList = ({ needsFresh, onRefreshSucceeded }) => {
     }
   }, [onRefreshSucceeded, needsFresh, fetchItems])
 
-  const onItemCompleted = (itemId) => {
+  const onItemCompleted = (itemId: string) => {
     const updatedItems = items.map((item) => {
       if (item.id === itemId) {
         return { ...item, isCompleted: true }
