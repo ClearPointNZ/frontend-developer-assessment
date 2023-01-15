@@ -1,10 +1,10 @@
 {
   "name": "todolist.app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "author": "ClearPoint",
   "engines": {
-    "node": ">=18.11.0"
+    "node": "=16.19.0 <17"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -13,12 +13,16 @@
     "axios": "^1.2.2",
     "bootstrap": "^5.2.3",
     "cross-env": "^7.0.3",
-    "node-sass": "^8.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "sass": "^1.57.1",
     "web-vitals": "^3.1.1"
+  },
+  "overrides": {
+    "make-fetch-happen": "11.0.0",
+    "nth-check": "2.1.1",
+    "svgo": "2.x.x"
   },
   "scripts": {
     "start": "cross-env BROWSER=chrome react-scripts start",
@@ -45,6 +49,7 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.8.2"
+    "prettier": "2.8.2",
+    "react-scripts": "5.0.1"
   }
 }
