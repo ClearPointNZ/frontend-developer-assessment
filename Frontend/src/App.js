@@ -1,16 +1,16 @@
-import './App.css'
-import { Image, Alert, Button, Container, Row, Col, Form, Table, Stack } from 'react-bootstrap'
-import React, { useState, useEffect } from 'react'
+import './App.css';
+import { Image, Alert, Button, Container, Row, Col, Form, Table, Stack } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 
-const axios = require('axios')
+const axios = require('axios');
 
 const App = () => {
-  const [description, setDescription] = useState('')
-  const [items, setItems] = useState([])
+  const [description, setDescription] = useState('');
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     // todo
-  }, [])
+  }, []);
 
   const renderAddTodoItemContent = () => {
     return (
@@ -40,8 +40,8 @@ const App = () => {
           </Stack>
         </Form.Group>
       </Container>
-    )
-  }
+    );
+  };
 
   const renderTodoItemsContent = () => {
     return (
@@ -76,38 +76,38 @@ const App = () => {
           </tbody>
         </Table>
       </>
-    )
-  }
+    );
+  };
 
   const handleDescriptionChange = (event) => {
     // todo
-  }
+  };
 
   async function getItems() {
     try {
-      alert('todo')
+      alert('todo');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
   async function handleAdd() {
     try {
-      alert('todo')
+      alert('todo');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
   function handleClear() {
-    setDescription('')
+    setDescription('');
   }
 
   async function handleMarkAsComplete(item) {
     try {
-      alert('todo')
+      alert('todo');
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
@@ -159,7 +159,7 @@ const App = () => {
         </div>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
