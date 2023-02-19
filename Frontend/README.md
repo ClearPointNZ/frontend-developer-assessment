@@ -1,4 +1,18 @@
-# Getting Started with Create React App
+# ClearPoint TODO list frontend application
+
+## Getting up-and-running
+
+Run the following command in the frontend folder:
+
+```npm install```
+
+Then **copy** (do not rename) .env-example to .env and fill in your backend API base address. This could be something like http://localhost:7000 for a development environment.
+
+Then run the following to launch the frontend (assuming you have the backend up-and-running already).
+
+```npm start```
+
+## Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and for styling we've used [React-Bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
 
