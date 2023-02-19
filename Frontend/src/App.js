@@ -4,9 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Instructions from './components/Instructions';
 import Footer from './components/Footer';
 
-const axios = require('axios');
-
-const App = () => {
+const App = ({ todoListApi }) => {
   const [description, setDescription] = useState('');
   const [items, setItems] = useState([]);
 
