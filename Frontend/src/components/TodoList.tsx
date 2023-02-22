@@ -17,19 +17,21 @@ const TodoList = ({ todoListApi, todoItems, setTodoItems }: TodoListProps) => {
 
   // Reusable function for refreshing the todoItems
   const refreshTodoItems = () => {
-    todoListApi
-      .getAll()
-      .then((todoItems) => {
+    const getAllFromTodoListApi = async () => {
+      try {
+        const todoItems = await todoListApi.getAll();
         setTodoItems(todoItems);
         setTodoItemsError('');
-      })
-      .catch((error) => {
+      } catch (error: any) {
         setTodoItemsError(
           `Could not fetch todo items due to a server error: ${
             error.response?.data ? error.response.data : error.message
           }`
         );
-      });
+      }
+    };
+
+    getAllFromTodoListApi();
   };
 
   async function handleMarkAsComplete(todoListItem: TodoListItem) {
