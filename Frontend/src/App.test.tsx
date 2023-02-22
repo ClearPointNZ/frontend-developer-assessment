@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import Footer from './components/Footer';
 import Instructions from './components/Instructions';
 import AddForm from './components/AddForm';
-import TodoList from './components/TodoList';
-import userEvent from '@testing-library/user-event';
+import { TodoListApi, TodoListItem } from './Globals';
 import App from './App';
 
 describe('Footer', () => {
@@ -24,13 +24,13 @@ describe('Instructions', () => {
 
 describe('AddForm', () => {
   it('renders the AddForm component', () => {
-    render(<AddForm />);
+    render(<AddForm todoListApi={mockedTodoListApi} todoItems={mockedTodoItems} setTodoItems={mockedSetTodoItems} />);
 
-    expect(screen.getByRole('heading', 'Add Item')).toBeInTheDocument();
+    expect(screen.getByRole('heading')).toBeInTheDocument();
   });
 
   it('does not allow adding todo items with <5 characters', async () => {
-    render(<AddForm />);
+    render(<AddForm todoListApi={mockedTodoListApi} todoItems={mockedTodoItems} setTodoItems={mockedSetTodoItems} />);
 
     const input = screen.getByRole('textbox');
     const buttons = await screen.findAllByRole('button');
@@ -51,25 +51,7 @@ describe('AddForm', () => {
   });
 
   it('Adds a todo item with 5 or more characters', async () => {
-    // We provide a mock for the api
-    const todoListApi = {
-      create: async (todoListItem) => {
-        return {
-          id: 'test',
-          description: 'Description',
-          complete: false,
-        };
-      },
-    };
-
-    // We simulate the state dependencies with a simple array + setter, so that
-    // we can check later whether the todoItem has been appended to the todoItems array
-    let todoItems = [];
-    const setTodoItems = (items) => {
-      todoItems = items;
-    };
-
-    render(<AddForm todoListApi={todoListApi} todoItems={todoItems} setTodoItems={setTodoItems} />);
+    render(<AddForm todoListApi={mockedTodoListApi} todoItems={mockedTodoItems} setTodoItems={mockedSetTodoItems} />);
 
     const input = screen.getByRole('textbox');
     const buttons = await screen.findAllByRole('button');
@@ -83,8 +65,8 @@ describe('AddForm', () => {
     fireEvent.click(addBtn);
 
     // Check whether the setTodoItems was triggered
-    waitFor(() => {
-      expect(todoItems).toHaveLength(1);
+    await waitFor(() => {
+      expect(mockedTodoItems).toHaveLength(1);
     });
   });
 });
@@ -95,66 +77,72 @@ describe('AddForm', () => {
 // so that at least we can assert the proper working through there.
 describe('TodoList', () => {
   it('can show a list of TODO items on load', async () => {
-    // We provide a mock for the api
-    const todoListApi = {
-      getAll: async () => {
-        return [
-          {
-            id: 'id1',
-            description: 'Description 1',
-            complete: false,
-          },
-          {
-            id: 'id2',
-            description: 'Description 2',
-            complete: false,
-          },
-          {
-            id: 'id3',
-            description: 'Description 3',
-            complete: false,
-          },
-        ];
-      },
-    };
-
-    render(<App todoListApi={todoListApi} />);
+    render(<App todoListApi={mockedTodoListApi} />);
 
     expect(await screen.findByText('Description 2')).toBeInTheDocument();
   });
 
   it('can mark a todoItem as completed', async () => {
-    // We provide a mock for the api
-    const todoListApi = {
-      getAll: async () => {
-        return [
-          {
-            id: 'id1',
-            description: 'Description 1',
-            complete: false,
-          },
-        ];
-      },
-      update: async () => {
-        return {
-          id: 'id1',
-          description: 'Description 1',
-          complete: true,
-        };
-      },
-    };
+    render(<App todoListApi={mockedTodoListApi} />);
 
-    render(<App todoListApi={todoListApi} />);
+    const markButtons = await screen.findAllByText('Mark as completed');
 
-    const item1MarkButton = await screen.findByText('Mark as completed');
+    const item1MarkButton = markButtons[0];
 
     expect(item1MarkButton).toBeInTheDocument();
 
-    await userEvent.click(item1MarkButton);
+    const tr = item1MarkButton.closest('tr');
+    if (!tr) {
+      throw new Error('The first mark as completed button does not have a TR parent');
+    }
 
-    const item1 = await screen.findByText('Description 1');
+    fireEvent.click(item1MarkButton);
 
-    // Test that the line through class is set on the parent row
-    expect(item1.closest('tr').className).toContain('text-decoration-line-through');
+    // Check whether the setTodoItems was triggered
+    await waitFor(() => {
+      expect(tr.className).toContain('text-decoration-line-through');
+    });
   });
 });
+
+const mockedTodoListApi: TodoListApi = {
+  getAll: async () => {
+    return [
+      {
+        id: 'id1',
+        description: 'Description 1',
+        complete: false,
+      },
+      {
+        id: 'id2',
+        description: 'Description 2',
+        complete: false,
+      },
+      {
+        id: 'id3',
+        description: 'Description 3',
+        complete: false,
+      },
+    ];
+  },
+  get: async () => {
+    return {
+      id: 'id1',
+      description: 'Description 1',
+      complete: false,
+    };
+  },
+  create: async (todoListItem: TodoListItem) => {
+    return { ...todoListItem };
+  },
+  update: async (todoListItem: TodoListItem) => {
+    return { ...todoListItem };
+  },
+};
+
+// We simulate the state dependencies with a simple array + setter, so that
+// we can check later whether the todoItem has been appended to the todoItems array
+let mockedTodoItems: TodoListItem[] = [];
+const mockedSetTodoItems = (items: TodoListItem[]) => {
+  mockedTodoItems = items;
+};

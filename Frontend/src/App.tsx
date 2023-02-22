@@ -1,12 +1,17 @@
 import './App.css';
 import { Image, Container, Row, Col } from 'react-bootstrap';
 import React, { useState } from 'react';
-import AddForm from './components/AddForm';
-import Instructions from './components/Instructions';
-import Footer from './components/Footer';
 import TodoList from './components/TodoList';
+import { TodoListApi } from './Globals';
+import Instructions from './components/Instructions';
+import AddForm from './components/AddForm';
+import Footer from './components/Footer';
 
-const App = ({ todoListApi }) => {
+interface AppProps {
+  todoListApi: TodoListApi;
+}
+
+const App = ({ todoListApi }: AppProps) => {
   const [todoItems, setTodoItems] = useState([]);
 
   return (

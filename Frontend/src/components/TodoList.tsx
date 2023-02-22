@@ -1,7 +1,14 @@
 import { Alert, Button, Table } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
+import { TodoListApi, TodoListItem } from '../Globals';
 
-const TodoList = ({ todoListApi, todoItems, setTodoItems }) => {
+export interface TodoListProps {
+  todoListApi: TodoListApi;
+  todoItems: TodoListItem[];
+  setTodoItems: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const TodoList = ({ todoListApi, todoItems, setTodoItems }: TodoListProps) => {
   const [todoItemsError, setTodoItemsError] = useState('');
 
   useEffect(() => {
@@ -25,7 +32,7 @@ const TodoList = ({ todoListApi, todoItems, setTodoItems }) => {
       });
   };
 
-  async function handleMarkAsComplete(todoListItem) {
+  async function handleMarkAsComplete(todoListItem: TodoListItem) {
     try {
       // Update the item on the server
       const updatedItem = await todoListApi.update({ ...todoListItem, complete: true });
@@ -38,12 +45,12 @@ const TodoList = ({ todoListApi, todoItems, setTodoItems }) => {
           `The todo item was successfully marked as completed, but the local table could not be properly updated. Please hit refresh.`
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       setTodoItemsError(error.response.data);
     }
   }
 
-  const updateTodoItem = (todoItem) => {
+  const updateTodoItem = (todoItem: TodoListItem) => {
     const index = todoItems.findIndex((item) => {
       return item.id === todoItem.id;
     });

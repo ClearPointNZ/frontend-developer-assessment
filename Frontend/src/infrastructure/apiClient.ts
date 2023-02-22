@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 // Centralised API client, allowing for better maintainability and centralised actions, such as logging
 const apiClient = axios.create({
@@ -7,7 +7,7 @@ const apiClient = axios.create({
 });
 
 // Custom error handler for API client
-const errorHandler = (error) => {
+const errorHandler = (error: AxiosError) => {
   const statusCode = error.response?.status;
 
   // TODO: Tie in an error logging service that can notify us realtime when errors are happening
@@ -21,7 +21,7 @@ const errorHandler = (error) => {
 };
 
 // Registering the error handler on the API client via the interceptors
-apiClient.interceptors.response.use(undefined, (error) => {
+apiClient.interceptors.response.use(undefined, (error: AxiosError) => {
   return errorHandler(error);
 });
 

@@ -1,7 +1,14 @@
 import { Alert, Button, Col, Container, Form, Row, Stack } from 'react-bootstrap';
 import React, { useState } from 'react';
+import { TodoListApi, TodoListItem } from '../Globals';
 
-export default function AddForm({ todoListApi, todoItems, setTodoItems }) {
+export interface AddFormProps {
+  todoListApi: TodoListApi;
+  todoItems: TodoListItem[];
+  setTodoItems: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export default function AddForm({ todoListApi, todoItems, setTodoItems }: AddFormProps) {
   const [description, setDescription] = useState('');
   const [addDescriptionError, setAddDescriptionError] = useState('');
 
@@ -30,7 +37,7 @@ export default function AddForm({ todoListApi, todoItems, setTodoItems }) {
           `The todo item was successfully added, but the local table could not be properly updated. Please hit refresh.`
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       setAddDescriptionError(
         `Could not add the todo item due to a server error: ${
           error.response?.data ? error.response.data : error.message
@@ -39,7 +46,7 @@ export default function AddForm({ todoListApi, todoItems, setTodoItems }) {
     }
   }
 
-  const appendTodoItem = (todoItem) => {
+  const appendTodoItem = (todoItem: TodoListItem) => {
     const updatedTodoItems = [...todoItems, todoItem];
 
     setTodoItems(updatedTodoItems);
@@ -49,7 +56,7 @@ export default function AddForm({ todoListApi, todoItems, setTodoItems }) {
     setDescription('');
   }
 
-  const handleDescriptionChange = (event) => {
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
 

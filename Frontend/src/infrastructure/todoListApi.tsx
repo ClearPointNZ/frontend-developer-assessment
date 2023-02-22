@@ -1,8 +1,9 @@
-import apiClient from './apiClient';
-
 // Reusable API layer
-const todoListApi = {
-  get: async (id) => {
+import apiClient from './apiClient';
+import { TodoListApi, TodoListItem } from '../Globals';
+
+export const todoListApi: TodoListApi = {
+  get: async (id: number): Promise<TodoListItem> => {
     const response = await apiClient.request({
       url: `/api/todoItems/${id}`,
       method: 'GET',
@@ -11,7 +12,7 @@ const todoListApi = {
     return response.data;
   },
 
-  getAll: async () => {
+  getAll: async (): Promise<Array<TodoListItem>> => {
     const response = await apiClient.request({
       url: '/api/todoItems',
       method: 'GET',
@@ -20,7 +21,7 @@ const todoListApi = {
     return response.data;
   },
 
-  create: async (todoListItem) => {
+  create: async (todoListItem: TodoListItem): Promise<TodoListItem> => {
     const response = await apiClient.request({
       url: `/api/TodoItems`,
       method: 'POST',
@@ -30,7 +31,7 @@ const todoListApi = {
     return response.data;
   },
 
-  update: async (todoListItem) => {
+  update: async (todoListItem: TodoListItem): Promise<TodoListItem> => {
     const response = await apiClient.request({
       url: `/api/TodoItems/${todoListItem.id}`,
       method: 'PUT',
@@ -40,5 +41,3 @@ const todoListApi = {
     return response.data;
   },
 };
-
-export default todoListApi;
