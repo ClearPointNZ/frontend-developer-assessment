@@ -20,6 +20,8 @@
   },
   "scripts": {
     "start": "cross-env BROWSER=chrome react-scripts start",
+    "start:backend": "cd ../Backend/TodoList.Api && npm run dev",
+    "dev": "concurrently \"npm run start\" \"npm run start:backend\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -47,6 +49,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "bootstrap": "^5.2.3",
+    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "prettier": "^2.8.2",
     "react-scripts": "^5.0.1",
@@ -56,5 +59,6 @@
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
     }
-  }
+  },
+  "proxy": "http://localhost:7000"
 }
